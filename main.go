@@ -73,7 +73,9 @@ func main() {
 		return
 	}
 
-	fmt.Printf("%#v\n", appConfig)
-	fmt.Printf("%#v\n", Keys)
+	//fmt.Printf("%#v\n", appConfig)
+	//fmt.Printf("%#v\n", Keys)
 
+	item := GetLinks(appConfig.TMDB_Id, Keys.TmdbKeyV4)
+	fmt.Printf("%#v\n", item)
 }

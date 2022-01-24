@@ -33,6 +33,6 @@ func init() {
 
 	if len(Keys.TmdbKeyV4) <= 0 {
 		log.Printf("Invalid TmdbKeyV4, check %s file\n", keyFileName)
-		os.Exit(-2)
+		os.Exit(-1)
 	}
 }

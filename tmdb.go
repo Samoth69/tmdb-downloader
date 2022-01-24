@@ -34,8 +34,14 @@ type tmdbGetImagesAnswer struct {
 	Posters   tmdbItems `json:"posters"`
 }
 
-//downloads ALL images for the provided tmdbId
+//send a request to tmdb api and then create a list of DownloadableItem
+//tmdbId: tmdbid to download files
+//bearerToken: tmdb api token for auth
 func GetLinks(tmdbId int, bearerToken string) (ret []DownloadableItem) {
+	//--------------------
+	//creating http client
+	//--------------------
+
 	//url to fetch
 	url := fmt.Sprintf("https://api.themoviedb.org/3/tv/%d/images?include_image_language=fr,en,null", tmdbId)
 
@@ -46,6 +52,8 @@ func GetLinks(tmdbId int, bearerToken string) (ret []DownloadableItem) {
 	req.Header.Add("Authorization", bearer)
 
 	client := &http.Client{}
+
+	//sending http request
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println("Error on api call:", err)
@@ -53,12 +61,14 @@ func GetLinks(tmdbId int, bearerToken string) (ret []DownloadableItem) {
 	}
 	defer resp.Body.Close()
 
+	//reading http answer
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Println("Error while reading the response bytes:", err)
 		os.Exit(-1)
 	}
 
+	//parsing to json
 	var parsed_data tmdbGetImagesAnswer
 	err = json.Unmarshal(body, &parsed_data)
 	if err != nil {
@@ -66,7 +76,14 @@ func GetLinks(tmdbId int, bearerToken string) (ret []DownloadableItem) {
 		os.Exit(-1)
 	}
 
+	//--------------------
+	//processing datas
+	//--------------------
+
+	//total number of items
 	itemSize := len(*parsed_data.Backdrops) + len(*parsed_data.Logos) + len(*parsed_data.Posters)
+
+	//array to be returned is initialised with the needed size
 	ret = make([]DownloadableItem, itemSize)
 
 	//count between all elements
@@ -81,6 +98,7 @@ func GetLinks(tmdbId int, bearerToken string) (ret []DownloadableItem) {
 		parsed_data.Logos,
 		parsed_data.Posters,
 	}
+
 	for bigListIndex, list := range *currentList {
 		for elemIndex, element = range *list {
 			var fileName string
@@ -104,6 +122,8 @@ func GetLinks(tmdbId int, bearerToken string) (ret []DownloadableItem) {
 	return
 }
 
+//search and return the file extension in the string
+//return "" if not found
 func getExtensionFromFilePath(name string) string {
 	index := strings.LastIndex(name, ".")
 	if index == -1 {

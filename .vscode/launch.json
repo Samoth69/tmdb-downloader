@@ -11,10 +11,8 @@
             "mode": "auto",
             "program": "${fileDirname}",
             "args": [
-                "--help",
                 "-yv",
-                "-aid",
-                "1234"
+                "45"
             ]
         }
     ]

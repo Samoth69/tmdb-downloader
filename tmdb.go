@@ -42,7 +42,7 @@ func GetLinks(tmdbId int, bearerToken string) (ret []DownloadableItem) {
 	//bearer token
 	bearer := "Bearer " + bearerToken
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Authorization", bearer)
 
 	client := &http.Client{}

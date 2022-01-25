@@ -17,7 +17,7 @@ func DownloadFiles(toDownload *[]DownloadableItem, downloadLocation string) {
 		//progressbar.OptionSetWriter(ansi.NewAnsiStdout()),
 		progressbar.OptionEnableColorCodes(true),
 		progressbar.OptionShowBytes(false),
-		progressbar.OptionSetWidth(15),
+		//progressbar.OptionSetWidth(15),
 		//progressbar.OptionSetDescription("[cyan][1/3][reset] Writing moshable file..."),
 		progressbar.OptionSetTheme(progressbar.Theme{
 			Saucer:        "[green]=[reset]",

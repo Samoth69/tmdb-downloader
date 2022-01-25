@@ -37,7 +37,7 @@ type tmdbGetImagesAnswer struct {
 //send a request to tmdb api and then create a list of DownloadableItem
 //tmdbId: tmdbid to download files
 //bearerToken: tmdb api token for auth
-func GetLinks(tmdbId int, bearerToken string) (ret []DownloadableItem) {
+func GetLinks(tmdbId int, bearerToken string) *[]DownloadableItem {
 	//--------------------
 	//creating http client
 	//--------------------
@@ -84,7 +84,7 @@ func GetLinks(tmdbId int, bearerToken string) (ret []DownloadableItem) {
 	itemSize := len(*parsed_data.Backdrops) + len(*parsed_data.Logos) + len(*parsed_data.Posters)
 
 	//array to be returned is initialised with the needed size
-	ret = make([]DownloadableItem, itemSize)
+	var ret = make([]DownloadableItem, itemSize)
 
 	//count between all elements
 	globalIndex := 0
@@ -119,7 +119,7 @@ func GetLinks(tmdbId int, bearerToken string) (ret []DownloadableItem) {
 			globalIndex++
 		}
 	}
-	return
+	return &ret
 }
 
 //search and return the file extension in the string

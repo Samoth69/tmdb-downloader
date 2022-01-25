@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 	"strconv"
 	"time"
 
@@ -13,14 +14,14 @@ import (
 // struct containing app settings
 // this struct will be filled by reading program args
 type structConf struct {
-	TMDB_Id   int
-	Verbose   bool
-	AnswerYes bool
-	AnswerNo  bool
+	TMDB_Id        int
+	AnswerYes      bool
+	AnswerNo       bool
+	MaxThreadCount int
 }
 
 //load os provided args
-func LoadArgs(settings *structConf) (success bool, err error) {
+func LoadArgs(settings *structConf) (bool, error) {
 	app := &cli.App{
 		Name:                   "MetadataDownloader",
 		Usage:                  "Download images from tmdb",
@@ -47,22 +48,22 @@ func LoadArgs(settings *structConf) (success bool, err error) {
 					return cli.Exit("invalid tmdb_id, should be a positive number", -3)
 				}
 			} else {
-				return cli.Exit(fmt.Sprintf("%s is invalid, this should be a number", inputTmdbIdValue), -1)
+				return cli.Exit(fmt.Sprintf("%s is invalid, should be a positive number", inputTmdbIdValue), -1)
 			}
 
 			return nil
 		},
 		Flags: []cli.Flag{
-			&cli.BoolFlag{Name: "verbose", Aliases: []string{"v"}, Value: false, Usage: "App will be more chatty", Destination: &settings.Verbose},
 			&cli.BoolFlag{Name: "yes", Aliases: []string{"y"}, Value: false, Usage: "Automatically answer Yes to questions", Destination: &settings.AnswerYes},
 			&cli.BoolFlag{Name: "no", Aliases: []string{"n"}, Value: false, Usage: "Automatically answer No to questions", Destination: &settings.AnswerNo},
+			&cli.IntFlag{Name: "threads", Aliases: []string{"t"}, Value: 4, Usage: "Max number of downloading threads", Destination: &settings.MaxThreadCount},
 		},
 	}
 
-	err = app.Run(os.Args)
-	success = err == nil
+	err := app.Run(os.Args)
+	success := err == nil
 
-	return
+	return success, err
 }
 
 func main() {
@@ -73,9 +74,11 @@ func main() {
 		return
 	}
 
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	//fmt.Printf("%#v\n", appConfig)
 	//fmt.Printf("%#v\n", Keys)
 
 	item := GetLinks(appConfig.TMDB_Id, Keys.TmdbKeyV4)
-	fmt.Printf("%#v\n", item)
+	DownloadFiles(item, appConfig.MaxThreadCount)
 }

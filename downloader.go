@@ -11,7 +11,7 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-func DownloadFiles(toDownload *[]DownloadableItem) {
+func DownloadFiles(toDownload *[]DownloadableItem, downloadLocation string) {
 	arrSize := len(*toDownload)
 	bar := progressbar.NewOptions(arrSize,
 		//progressbar.OptionSetWriter(ansi.NewAnsiStdout()),
@@ -29,7 +29,7 @@ func DownloadFiles(toDownload *[]DownloadableItem) {
 	for index := range *toDownload {
 		elem := &(*toDownload)[index]
 		bar.Describe(fmt.Sprintf("[cyan][%d/%d][reset] Downloading %40s", index+1, arrSize, elem.FileName))
-		err := downloadFile(elem.FileName, elem.Address)
+		err := downloadFile(elem.FileName, elem.Address, downloadLocation)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -39,7 +39,7 @@ func DownloadFiles(toDownload *[]DownloadableItem) {
 
 // DownloadFile will download a url to a local file. It's efficient because it will
 // write as it downloads and not load the whole file into memory.
-func downloadFile(filepath string, url string) error {
+func downloadFile(filepath string, url string, downloadLocation string) error {
 
 	// Get the data
 	resp, err := http.Get(url)

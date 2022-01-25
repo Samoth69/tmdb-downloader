@@ -7,8 +7,6 @@ import (
 	"os"
 )
 
-const keyFileName = "api_keys.json"
-
 type ApiKeys struct {
 	TmdbKeyV4 string
 }
@@ -17,12 +15,12 @@ type ApiKeys struct {
 // thoses are sensible data, should be handled with care
 var Keys ApiKeys
 
-func init() {
-	jsonFile, err := os.Open(keyFileName)
+func LoadKeys(path string) {
+	jsonFile, err := os.Open(path)
 	if err != nil {
 		text, _ := json.MarshalIndent(Keys, "", "  ")
-		os.WriteFile(keyFileName, text, 0755)
-		log.Printf("%s not found, creating default, please fill this file before using this tool\n", keyFileName)
+		os.WriteFile(path, text, 0755)
+		log.Printf("%s not found, creating default, please fill this file before using this tool\n", path)
 		os.Exit(-1)
 	}
 
@@ -32,7 +30,7 @@ func init() {
 	json.Unmarshal(data, &Keys)
 
 	if len(Keys.TmdbKeyV4) <= 0 {
-		log.Printf("Invalid TmdbKeyV4, check %s file\n", keyFileName)
+		log.Printf("Invalid TmdbKeyV4, check %s file\n", path)
 		os.Exit(-1)
 	}
 }

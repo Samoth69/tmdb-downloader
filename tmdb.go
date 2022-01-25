@@ -43,7 +43,7 @@ func GetLinks(tmdbId int, bearerToken string) *[]DownloadableItem {
 	//--------------------
 
 	//url to fetch
-	url := fmt.Sprintf("https://api.themoviedb.org/3/tv/%d/images?include_image_language=fr,en,null", tmdbId)
+	url := fmt.Sprintf("https://api.themoviedb.org/3/tv/%d/images?include_image_language=fr,en,ja,null", tmdbId)
 
 	//bearer token
 	bearer := "Bearer " + bearerToken

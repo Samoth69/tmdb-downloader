@@ -1,4 +1,4 @@
-module samoth/metadata-downloader
+module samoth69/metadata-downloader
 
 go 1.17
 

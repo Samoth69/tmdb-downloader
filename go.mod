@@ -1,4 +1,4 @@
-module samoth69/metadata-downloader
+module github.com/Samoth69/tmdb-downloader
 
 go 1.17
 

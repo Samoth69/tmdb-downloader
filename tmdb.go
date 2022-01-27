@@ -26,7 +26,7 @@ type tmdbItem struct {
 	FilePath string `json:"file_path"`
 }
 
-type tmdbItems *[]tmdbItem
+type tmdbItems []tmdbItem
 
 type tmdbGetImagesAnswer struct {
 	Backdrops tmdbItems `json:"backdrops"`
@@ -81,7 +81,7 @@ func GetLinks(tmdbId int, bearerToken string) *[]DownloadableItem {
 	//--------------------
 
 	//total number of items
-	itemSize := len(*parsed_data.Backdrops) + len(*parsed_data.Logos) + len(*parsed_data.Posters)
+	itemSize := len(parsed_data.Backdrops) + len(parsed_data.Logos) + len(parsed_data.Posters)
 
 	//array to be returned is initialised with the needed size
 	var ret = make([]DownloadableItem, itemSize)
@@ -89,8 +89,8 @@ func GetLinks(tmdbId int, bearerToken string) *[]DownloadableItem {
 	//count between all elements
 	globalIndex := 0
 
-	var elemIndex int
-	var element tmdbItem
+	// var elemIndex int
+	// var element tmdbItem
 
 	//list of tmdbItems
 	currentList := &[]tmdbItems{
@@ -99,8 +99,10 @@ func GetLinks(tmdbId int, bearerToken string) *[]DownloadableItem {
 		parsed_data.Posters,
 	}
 
-	for bigListIndex, list := range *currentList {
-		for elemIndex, element = range *list {
+	for bigListIndex := range *currentList {
+		bigList := &(*currentList)[bigListIndex]
+		for elemIndex := range *bigList {
+			element := &(*bigList)[elemIndex]
 			var fileName string
 			switch bigListIndex {
 			case 0:
